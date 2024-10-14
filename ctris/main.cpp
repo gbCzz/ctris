@@ -63,7 +63,7 @@ int main() {
 		drawPlayingField();
 		// Ë¢ÐÂÆÁÄ»
 		FlushBatchDraw();
-
+		Sleep(10);
 	}
 
 	EndBatchDraw();
@@ -109,4 +109,9 @@ void drawPlayingField() {
 			MAX_WIDTH / 2 + 5 * CELL_LENGTH, MAX_HEIGHT / 2 - i * CELL_LENGTH + 1 + CELL_LENGTH
 		);
 	}
+	return;
+}
+
+void drawMino(int xF, int yF, COLORREF color) {
+	return;
 }
