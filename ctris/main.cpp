@@ -1,7 +1,12 @@
 #include <graphics.h>
+#include <queue>
+#include <time.h>
+#include <stdlib.h>
 
 #include "tdraw.h"
 #include "tdefine.h"
+
+std::deque<TETROMINO_t> spawnQueue;
 
 int main() {
 	initgraph(MAX_WIDTH, MAX_HEIGHT);
@@ -17,6 +22,10 @@ int main() {
 	bool kbsdrop = false;
 	bool kbhdrop = false;
 	ExMessage m;
+
+	bool gaming = true;
+	bool existmino = false;
+	time_t lastfall = 0;
 
 	while (!kbexit) {
 		// 获取控制
@@ -52,14 +61,25 @@ int main() {
 				}
 			}
 		}
-
+		// 检查生成队列中剩余方块个数，如不足，则用洗牌算法生成新的一包
+		if (spawnQueue.size() <= 6) {
+			TETROMINO_t bag[] = { 0, 1, 2, 3, 4, 5, 6 };
+			for (int i = 0; i < 7; i++) {
+				srand(time(NULL));
+				int ind = rand() % (7 - i);
+				TETROMINO_t tmp = bag[ind];
+				bag[ind] = bag[6 - i];
+				bag[6 - i] = tmp;
+			}
+			for (int i = 0; i < 7; i++) {
+				spawnQueue.push_back(bag[i]);
+			}
+		}
 		// 绘制
 		cleardevice();
 
 		// 绘制空地图
 		drawPlayingField();
-		drawMino(9, 0, RED, D_RED);
-		drawMino(0, 0, RED, D_RED);
 		// 刷新屏幕
 		FlushBatchDraw();
 		Sleep(10);
@@ -123,16 +143,23 @@ void drawMino(int xF, int yF, COLORREF bcolor, COLORREF dcolor) {
 	int y1 = MAX_HEIGHT / 2 + 11 * CELL_LENGTH - yF * CELL_LENGTH;
 	int x2 = x1 + CELL_LENGTH - 1;
 	int y2 = y1 - CELL_LENGTH + 1;
+
+	// 亮色绘制完整方块
 	setfillcolor(bcolor);
 	solidrectangle(x1, y1, x2, y2);
+
+	// 右下角绘制暗色三角作为阴影的底色
 	setfillcolor(dcolor);
-	POINT dtrpt[] = {x1, y1, x2, y2, x2, y1};
+	POINT dtrpt[] = { x1, y1, x2, y2, x2, y1 };
 	solidpolygon(dtrpt, 3);
+
+	// 中间绘制亮色小正方形遮住部分暗色，同时用暗色边框表现棱边
 	setfillcolor(bcolor);
 	setlinecolor(dcolor);
+	// 你妈逼我算不明白什么时候 +1 什么时候 -1 了，反正看着顺眼就完事
 	fillrectangle(
-		(x1 + x2) / 2 - CELL_LENGTH / 4 + 1, (y1 + y2) / 2 + CELL_LENGTH / 4,
-		(x1 + x2) / 2 + CELL_LENGTH / 4, (y1 + y2) / 2 - CELL_LENGTH / 4 + 1
+		(x1 + x2) / 2 - CELL_LENGTH / 4 + 2, (y1 + y2) / 2 + CELL_LENGTH / 4,
+		(x1 + x2) / 2 + CELL_LENGTH / 4, (y1 + y2) / 2 - CELL_LENGTH / 4 + 2
 	);
 	return;
 }
