@@ -1,6 +1,7 @@
 #include <graphics.h>
 
 #include "tdraw.h"
+#include "tdefine.h"
 
 #define MAX_WIDTH 960
 #define MAX_HEIGHT 720
