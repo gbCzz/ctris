@@ -4,13 +4,14 @@
 #define MAX_HEIGHT 720
 #define CELL_LENGTH 32
 
-#define TID_I 0
-#define TID_J 1
-#define TID_L 2
-#define TID_O 3
-#define TID_S 4
-#define TID_T 5
-#define TID_Z 6
+#define TID_I 1
+#define TID_J 2
+#define TID_L 3
+#define TID_O 4
+#define TID_S 5
+#define TID_T 6
+#define TID_Z 7
+#define TID_SHADOW 8
 
 #define RST_0 0
 #define RST_R 1
@@ -37,7 +38,17 @@ static const struct Tetromino {
 	int shape[4][2];
 	int wall_kick[4][5][2];
 	COLORREF color;
-} tetrominoInfo[7] = {
+} tetrominoInfo[8] = {
+	{
+		{{0, 0}, {0, 0}, {0, 0}, {0, 0}},
+		{
+			{{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+			{{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+			{{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+			{{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+		},
+		0
+	}, // 完全没有意义的占位元素，不要调用他
 	{
 		{{0, 0}, {-1, 0}, {1, 0}, {2, 0}},
 		{

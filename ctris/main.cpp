@@ -24,8 +24,10 @@ int main() {
 	ExMessage m;
 
 	bool gaming = true;
-	bool existmino = false;
+	TETROMINO_t fallingmino = 0;
 	time_t lastfall = 0;
+
+	TETROMINO_t tetrominofield[22][10] = {};
 
 	while (!kbexit) {
 		// 获取控制
@@ -63,7 +65,7 @@ int main() {
 		}
 		// 检查生成队列中剩余方块个数，如不足，则用洗牌算法生成新的一包
 		if (spawnQueue.size() <= 6) {
-			TETROMINO_t bag[] = { 0, 1, 2, 3, 4, 5, 6 };
+			TETROMINO_t bag[] = { 1, 2, 3, 4, 5, 6, 7 };
 			for (int i = 0; i < 7; i++) {
 				srand(time(NULL));
 				int ind = rand() % (7 - i);
@@ -82,7 +84,7 @@ int main() {
 		drawPlayingField();
 		// 刷新屏幕
 		FlushBatchDraw();
-		Sleep(10);
+		Sleep(1);
 	}
 
 	EndBatchDraw();
