@@ -2,4 +2,4 @@
 
 void drawPlayingField();
 
-void drawMino(int, int, COLORREF);
+void drawMino(int, int, COLORREF, COLORREF);
