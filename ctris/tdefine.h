@@ -30,6 +30,9 @@
 #define D_MAGENTA 0x660066
 #define D_RED 0x000066
 
+typedef int TETROMINO_t;
+typedef int ROTSTATE_t;
+
 static const struct Tetromino {
 	int shape[4][2];
 	int wall_kick[4][5][2];
