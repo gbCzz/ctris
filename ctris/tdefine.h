@@ -22,6 +22,14 @@
 
 #define ORANGE 0x00AAFF
 
+#define D_CYAN 0x666600
+#define D_BLUE 0x660000
+#define D_ORANGE 0x0066AA
+#define D_YELLOW 0x00AAAA
+#define D_GREEN 0x006600
+#define D_MAGENTA 0x660066
+#define D_RED 0x000066
+
 static const struct Tetromino {
 	int shape[4][2];
 	int wall_kick[4][5][2];
