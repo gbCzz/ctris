@@ -44,25 +44,47 @@ void drawPlayingField() {
 	}
 }
 
-int main()
-{
+int main() {
 	initgraph(MAX_WIDTH, MAX_HEIGHT);
 	BeginBatchDraw();
 
-	bool exit = false;
-
+	bool kbexit = false;
+	bool kblmove = false;
+	bool kbrmove = false;
+	bool kblrot = false;
+	bool kbrrot = false;
+	bool kb2rot = false;
+	bool kbhold = false;
 	ExMessage m;
 
-	while (!exit)
-	{
+	while (!kbexit) {
 		// ªÒ»°øÿ÷∆
-		while (peekmessage(&m, EX_KEY))
-		{
-			if (m.message == WM_KEYDOWN)
-			{
-				switch (m.vkcode)
-				{
-				case VK_ESCAPE:	exit = true;	break;
+		while (peekmessage(&m, EX_KEY)) {
+			if (m.message == WM_KEYDOWN) {
+				switch (m.vkcode) {
+					case VK_ESCAPE:	
+						kbexit = true;
+						break;
+					case VK_LEFT: 
+						kblmove = true;
+						break;
+					case VK_RIGHT:
+						kbrmove = true;
+						break;
+					case VK_UP:
+					case 'x':
+						kbrrot = true;
+						break;
+					case 'z':
+						kblrot = true;
+						break;
+					case 'a':
+						kb2rot = true;
+						break;
+					case 'c':
+					case VK_SHIFT:
+						kbhold = true;
+						break;
 				}
 			}
 		}
