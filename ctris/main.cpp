@@ -112,27 +112,36 @@ int main() {
 		}
 
 		if (!hdropped) {
+			// 没有在软降，距离上次下落已经 1000ms，且上次下落后没有触底
 			if (!softdropping && clock() - lastfall >= 1000 && !lastfalltouched) {
 				lastfalltouched = singleDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 				lastfall = clock();
-			} else if (sdf <= 200 && softdropping && clock() - lastfall >= 1000 / sdf && !lastfalltouched) {
+			} // 在软降，SDF 有限，下落间隔改成 1000/SDF ms
+			else if (sdf <= 200 && softdropping && clock() - lastfall >= 1000 / sdf && !lastfalltouched) {
 				lastfalltouched = singleDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 				lastfall = clock();
-			} else if (sdf > 200 && softdropping && !lastfalltouched) {
+			} // 在软降，SDF 无穷大，按照硬降处理，但下降后不锁块
+			else if (sdf > 200 && softdropping && !lastfalltouched) {
 				hardDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 				lastfalltouched = true;
 				lastfall = clock();
 			}
+
+			// 按住左键已经经过了 DAS ms，平移间隔为 ARR
 			if (kblmove && clock() - kblmove >= das && clock() - lastlmove >= arr) {
 				leftmove(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 				lastlmove = clock();
 			}
+			// 右键同理，但是优先级低于左键
 			if (!kblmove && kbrmove && clock() - kbrmove >= das && clock() - lastrmove >= arr) {
 				rightmove(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 				lastrmove = clock();
 			}
+			// 移动后不锁块，在下一次循环重新判断是否还能下落，防止软降后平移却提前锁块
 			if (kblmove || kbrmove) lastfalltouched = false;
-			if (clock() - lastfall >= 500 && lastfalltouched) {
+
+			// 缓冲时间距离上次操作 500 ms
+			if (clock() - max(lastfall, max(lastrmove, lastlmove)) >= 500 && lastfalltouched) {
 				lockmino(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 				fallingmino = 0;
 				lastfalltouched = false;

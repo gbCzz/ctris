@@ -76,7 +76,7 @@ void lockmino(
 	}
 }
 
-bool leftmove(
+void leftmove(
 	TETROMINO_t fallingmino,
 	ROTSTATE_t rotstate,
 	int& fmCenterX,
@@ -102,10 +102,10 @@ bool leftmove(
 	for (auto elem : tetrominoInfo[fallingmino].shape[rotstate]) {
 		field[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = fallingmino;
 	}
-	return touched;
+	return;
 }
 
-bool rightmove(
+void rightmove(
 	TETROMINO_t fallingmino,
 	ROTSTATE_t rotstate,
 	int& fmCenterX,
@@ -131,5 +131,5 @@ bool rightmove(
 	for (auto elem : tetrominoInfo[fallingmino].shape[rotstate]) {
 		field[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = fallingmino;
 	}
-	return touched;
+	return;
 }
