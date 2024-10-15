@@ -16,12 +16,9 @@ int main() {
 	bool kbexit = false;
 	bool kblmove = false;
 	bool kbrmove = false;
-	bool kblrot = false;
-	bool kbrrot = false;
-	bool kb2rot = false;
-	bool kbhold = false;
-	bool kbsdrop = false;
-	bool kbhdrop = false;
+
+	bool hdropped = false;
+
 	ExMessage m;
 
 	bool gaming = true;
@@ -42,13 +39,16 @@ int main() {
 					case VK_LEFT: kblmove = true; break;
 					case VK_RIGHT: kbrmove = true; break;
 					case VK_UP:
-					case 'X': kbrrot = true; break;
-					case 'Z': kblrot = true; break;
-					case 'A': kb2rot = true; break;
+					case 'X': break;
+					case 'Z': break;
+					case 'A': break;
 					case 'C':
-					case VK_SHIFT: kbhold = true; break;
-					case VK_SPACE: kbhdrop = true; break;
-					case VK_DOWN: kbsdrop = true; break;
+					case VK_SHIFT: break;
+					case VK_SPACE:
+						hdropped = true;
+						hardDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+						break;
+					case VK_DOWN: break;
 				}
 			}
 			if (m.message == WM_KEYUP) {
@@ -57,13 +57,13 @@ int main() {
 					case VK_LEFT: kblmove = false; break;
 					case VK_RIGHT: kbrmove = false; break;
 					case VK_UP:
-					case 'x': kbrrot = false; break;
-					case 'z': kblrot = false; break;
-					case 'a': kb2rot = false; break;
-					case 'c':
-					case VK_SHIFT: kbhold = false; break;
-					case VK_SPACE: kbhdrop = false; break;
-					case VK_DOWN: kbsdrop = false; break;
+					case 'X': break;
+					case 'Z': break;
+					case 'A': break;
+					case 'C':
+					case VK_SHIFT: break;
+					case VK_SPACE: break;
+					case VK_DOWN: break;
 				}
 			}
 		}
@@ -72,7 +72,7 @@ int main() {
 		if (spawnQueue.size() <= 6) {
 			TETROMINO_t bag[] = { 1, 2, 3, 4, 5, 6, 7 };
 			for (int i = 0; i < 7; i++) {
-				srand(time(NULL));
+				srand(clock());
 				int ind = rand() % (7 - i);
 				TETROMINO_t tmp = bag[ind];
 				bag[ind] = bag[6 - i];
@@ -91,13 +91,26 @@ int main() {
 			for (auto elem : tetrominoInfo[fallingmino].shape[RST_0]) {
 				tetrominofield[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = fallingmino;
 			}
+			spawnQueue.pop_front();
 			lastfall = clock();
 		}
 
-		if (clock() - lastfall >= 1000 && !lastfalltouched) {
-			lastfalltouched = singleDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+		if (!hdropped) {
+			if (clock() - lastfall >= 100 && !lastfalltouched) {
+				lastfalltouched = singleDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+				lastfall = clock();
+			}
+
+			if (clock() - lastfall >= 100 && lastfalltouched) {
+				lockmino(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+				fallingmino = 0;
+				lastfalltouched = false;
+			}
+		} else {
+			fallingmino = 0;
+			hdropped = false;
 			lastfall = clock();
-		}
+		};
 
 		// »æÖÆ
 		cleardevice();
