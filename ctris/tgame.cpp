@@ -14,7 +14,7 @@ bool singleDrop(
 	// 判断下落一格后的位置是否已接触下方方块
 	for (auto elem : tetrominoInfo[fallingmino].shape[rotstate]) {
 		// nextY - 1 是在判断下落一格后的位置的下方，即再下落一格
-		if (field[fmCenterX + elem[X_POS]][nextY - 1 + elem[Y_POS]]) {
+		if (nextY - 1 + elem[Y_POS] < 0 || field[fmCenterX + elem[X_POS]][nextY - 1 + elem[Y_POS]]) {
 			touched = true;
 		}
 	}
@@ -23,7 +23,7 @@ bool singleDrop(
 		field[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = 0;
 	}
 
-	fmCenterY += 1;
+	fmCenterY -= 1;
 	for (auto elem : tetrominoInfo[fallingmino].shape[rotstate]) {
 		field[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = fallingmino;
 	}

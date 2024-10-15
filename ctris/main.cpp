@@ -5,6 +5,7 @@
 
 #include "tdraw.h"
 #include "tdefine.h"
+#include "tgame.h"
 
 std::deque<TETROMINO_t> spawnQueue;
 
@@ -25,8 +26,10 @@ int main() {
 
 	bool gaming = true;
 	TETROMINO_t fallingmino = 0;
+	ROTSTATE_t fmRotState = 0;
 	int fmCenterX = -1, fmCenterY = -1;
-	time_t lastfall = 0;
+	clock_t lastfall = 0;
+	bool lastfalltouched = false;
 
 	TETROMINO_t tetrominofield[10][22] = {};
 
@@ -85,9 +88,15 @@ int main() {
 			fallingmino = spawnQueue.front();
 			fmCenterX = 4;
 			fmCenterY = 20;
-			for (auto elem : tetrominoInfo[fallingmino].shape) {
+			for (auto elem : tetrominoInfo[fallingmino].shape[RST_0]) {
 				tetrominofield[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = fallingmino;
 			}
+			lastfall = clock();
+		}
+
+		if (clock() - lastfall >= 1000 && !lastfalltouched) {
+			lastfalltouched = singleDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+			lastfall = clock();
 		}
 
 		// »æÖÆ
