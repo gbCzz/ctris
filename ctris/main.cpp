@@ -17,6 +17,11 @@ int main() {
 	bool kblmove = false;
 	bool kbrmove = false;
 
+	int sdf = 201;
+	int arr = 0;
+	int das = 177;
+
+	bool softdropping = false;
 	bool hdropped = false;
 
 	ExMessage m;
@@ -47,8 +52,9 @@ int main() {
 					case VK_SPACE:
 						hdropped = true;
 						hardDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+						lockmino(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 						break;
-					case VK_DOWN: break;
+					case VK_DOWN: softdropping = true; break;
 				}
 			}
 			if (m.message == WM_KEYUP) {
@@ -63,7 +69,7 @@ int main() {
 					case 'C':
 					case VK_SHIFT: break;
 					case VK_SPACE: break;
-					case VK_DOWN: break;
+					case VK_DOWN: softdropping = false; break;
 				}
 			}
 		}
@@ -96,12 +102,19 @@ int main() {
 		}
 
 		if (!hdropped) {
-			if (clock() - lastfall >= 100 && !lastfalltouched) {
+			if (!softdropping && clock() - lastfall >= 1000 && !lastfalltouched) {
 				lastfalltouched = singleDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+				lastfall = clock();
+			} else if (sdf <= 200 && softdropping && clock() - lastfall >= 1000 / sdf && !lastfalltouched) {
+				lastfalltouched = singleDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+				lastfall = clock();
+			} else if (sdf > 200 && softdropping && !lastfalltouched) {
+				hardDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+				lastfalltouched = true;
 				lastfall = clock();
 			}
 
-			if (clock() - lastfall >= 100 && lastfalltouched) {
+			if (clock() - lastfall >= 500 && lastfalltouched) {
 				lockmino(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 				fallingmino = 0;
 				lastfalltouched = false;
@@ -126,7 +139,6 @@ int main() {
 		}
 		// Ë¢ÐÂÆÁÄ»
 		FlushBatchDraw();
-		Sleep(1);
 	}
 
 	EndBatchDraw();

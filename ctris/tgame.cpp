@@ -60,7 +60,7 @@ void hardDrop(
 
 	fmCenterY = nextY;
 	for (auto elem : tetrominoInfo[fallingmino].shape[rotstate]) {
-		field[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = -fallingmino;
+		field[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = fallingmino;
 	}
 }
 
