@@ -1,5 +1,7 @@
 #pragma once
 
+#include <easyx.h>
+
 #define MAX_WIDTH 960
 #define MAX_HEIGHT 720
 #define CELL_LENGTH 32
@@ -118,5 +120,5 @@ static const struct Tetromino {
 			{{0, 0}, {-1, 0}, {-1, -1}, {0, +2}, {-1, +2}},
 		},
 		RED
-	}, // z tetromino info
+	}, // Z tetromino info
 };
