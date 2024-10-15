@@ -14,8 +14,8 @@ int main() {
 	BeginBatchDraw();
 
 	bool kbexit = false;
-	bool kblmove = false;
-	bool kbrmove = false;
+	clock_t kblmove = 0;
+	clock_t kbrmove = 0;
 
 	int sdf = 201;
 	int arr = 0;
@@ -32,6 +32,8 @@ int main() {
 	int fmCenterX = -1, fmCenterY = -1;
 	clock_t lastfall = 0;
 	bool lastfalltouched = false;
+	clock_t lastlmove = 0;
+	clock_t lastrmove = 0;
 
 	TETROMINO_t tetrominofield[10][22] = {};
 
@@ -41,8 +43,16 @@ int main() {
 			if (m.message == WM_KEYDOWN) {
 				switch (m.vkcode) {
 					case VK_ESCAPE:	kbexit = true; break;
-					case VK_LEFT: kblmove = true; break;
-					case VK_RIGHT: kbrmove = true; break;
+					case VK_LEFT: 
+						if(!kblmove) kblmove = clock();
+						leftmove(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+						lastlmove = clock();
+						break;
+					case VK_RIGHT: 
+						if(!kbrmove) kbrmove = clock();
+						rightmove(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+						lastrmove = clock();
+						break;
 					case VK_UP:
 					case 'X': break;
 					case 'Z': break;
@@ -60,8 +70,8 @@ int main() {
 			if (m.message == WM_KEYUP) {
 				switch (m.vkcode) {
 					case VK_ESCAPE:	kbexit = false; break;
-					case VK_LEFT: kblmove = false; break;
-					case VK_RIGHT: kbrmove = false; break;
+					case VK_LEFT: kblmove = 0; break;
+					case VK_RIGHT: kbrmove = 0; break;
 					case VK_UP:
 					case 'X': break;
 					case 'Z': break;
@@ -113,7 +123,15 @@ int main() {
 				lastfalltouched = true;
 				lastfall = clock();
 			}
-
+			if (kblmove && clock() - kblmove >= das && clock() - lastlmove >= arr) {
+				leftmove(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+				lastlmove = clock();
+			}
+			if (!kblmove && kbrmove && clock() - kbrmove >= das && clock() - lastrmove >= arr) {
+				rightmove(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+				lastrmove = clock();
+			}
+			if (kblmove || kbrmove) lastfalltouched = false;
 			if (clock() - lastfall >= 500 && lastfalltouched) {
 				lockmino(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 				fallingmino = 0;
