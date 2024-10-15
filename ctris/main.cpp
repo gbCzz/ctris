@@ -25,10 +25,10 @@ int main() {
 
 	bool gaming = true;
 	TETROMINO_t fallingmino = 0;
-	int fmcenterX = -1, fmCenterY = -1;
+	int fmCenterX = -1, fmCenterY = -1;
 	time_t lastfall = 0;
 
-	TETROMINO_t tetrominofield[22][10] = {};
+	TETROMINO_t tetrominofield[10][22] = {};
 
 	while (!kbexit) {
 		// 获取控制
@@ -64,6 +64,7 @@ int main() {
 				}
 			}
 		}
+
 		// 检查生成队列中剩余方块个数，如不足，则用洗牌算法生成新的一包
 		if (spawnQueue.size() <= 6) {
 			TETROMINO_t bag[] = { 1, 2, 3, 4, 5, 6, 7 };
@@ -79,11 +80,28 @@ int main() {
 			}
 		}
 
+		// 检查是否有正在掉落的方块，如没有，则生成一个
+		if (gaming && !fallingmino) {
+			fallingmino = spawnQueue.front();
+			fmCenterX = 4;
+			fmCenterY = 20;
+			for (auto elem : tetrominoInfo[fallingmino].shape) {
+				tetrominofield[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = fallingmino;
+			}
+		}
+
 		// 绘制
 		cleardevice();
 
-		// 绘制空地图
+		// 绘制地图
 		drawPlayingField();
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 22; j++) {
+				if (tetrominofield[i][j] == 0) continue;
+				TETROMINO_t drawingmino = tetrominofield[i][j] > 0 ? tetrominofield[i][j] : -tetrominofield[i][j];
+				drawMino(i, j, tetrominoInfo[drawingmino].bcolor, tetrominoInfo[drawingmino].dcolor);
+			}
+		}
 		// 刷新屏幕
 		FlushBatchDraw();
 		Sleep(1);
