@@ -171,3 +171,23 @@ void rotate(TETROMINO_t fallingmino,
 		}
 	}	
 }
+
+int flushfullline(int field[10][22]) {
+	int cntline = 0;
+	for (int j = 0; j < 22; j++) {
+		bool full = true;
+		for (int i = 0; i < 10; i++) {
+			full *= field[i][j];
+		}
+		if (full) {
+			for (int y = j; y < 22; y++) {
+				for (int x = 0; x < 10; x++) {
+					field[x][y] = y + 1 >= 22 ? 0 : field[x][y + 1];
+				}
+			}
+			j--;
+			cntline++;
+		}
+	}
+	return cntline;
+}

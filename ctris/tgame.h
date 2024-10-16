@@ -9,3 +9,5 @@ void leftmove(TETROMINO_t, ROTSTATE_t, int&, int&, int[10][22]);
 void rightmove(TETROMINO_t, ROTSTATE_t, int&, int&, int[10][22]);
 
 void rotate(TETROMINO_t, ROTSTATE_t&, ROTSTATE_t, int&, int&, int[10][22]);
+
+int flushfullline(int[10][22]);

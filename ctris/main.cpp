@@ -83,6 +83,7 @@ int main() {
 						hdropped = true;
 						hardDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 						lockmino(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+						flushfullline(tetrominofield); 
 						break;
 					case VK_DOWN: softdropping = true; break;
 				}
@@ -177,6 +178,7 @@ int main() {
 			// 缓冲时间距离上次操作 500 ms
 			if (clock() - max(lastfall, max(lastrot, max(lastrmove, lastlmove))) >= 500 && lastfalltouched) {
 				lockmino(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+				flushfullline(tetrominofield);
 				fallingmino = 0;
 				lastfalltouched = false;
 			}
