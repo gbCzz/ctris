@@ -178,6 +178,7 @@ int main() {
 				lastfalltouched = false;
 			}
 		} else {
+			lastfalltouched = 0;
 			fallingmino = 0;
 			hdropped = false;
 			lastfall = clock();
