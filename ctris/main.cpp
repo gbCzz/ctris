@@ -227,6 +227,23 @@ int main() {
 		for (auto elem : tetrominoInfo[fallingmino].shape[fmRotState]) {
 			drawMino(fmCenterX + elem[X_POS], nextY + elem[Y_POS], tetrominoInfo[fallingmino].dcolor, 0);
 		}
+
+		// »æÖÆ hold ·½¿é
+		RECT tHOLDarea = {
+			MAX_WIDTH / 2 - 5 * CELL_LENGTH + (-5) * CELL_LENGTH + 1,
+			MAX_HEIGHT / 2 + 11 * CELL_LENGTH - (20) * CELL_LENGTH,
+			MAX_WIDTH / 2 - 5 * CELL_LENGTH + (-1) * CELL_LENGTH + 1,
+			MAX_HEIGHT / 2 + 11 * CELL_LENGTH - (18) * CELL_LENGTH,
+		};
+		settextstyle(CELL_LENGTH * 3 / 2, 0, _T("Arial"));
+		drawtext(_T("HOLD"), &tHOLDarea, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+		for (auto elem : tetrominoInfo[holdingmino].shape[RST_0]) {
+			if (!holded)
+				drawMino(-4 + elem[X_POS], 16 + elem[Y_POS], tetrominoInfo[holdingmino].bcolor, tetrominoInfo[holdingmino].dcolor);
+			else
+				drawMino(-4 + elem[X_POS], 16 + elem[Y_POS], tetrominoInfo[holdingmino].dcolor, 0);
+		}
+
 		// Ë¢ÐÂÆÁÄ»
 		FlushBatchDraw();
 	}
