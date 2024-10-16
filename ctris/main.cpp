@@ -165,14 +165,9 @@ int main() {
 				rightmove(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 				lastrmove = clock();
 			}
-			// 移动后不锁块，在下一次循环重新判断是否还能下落，防止软降后平移却提前锁块
+			// 移动或旋转后不锁块，在下一次循环重新判断是否还能下落，防止软降后平移旋转却提前锁块
 			if (kblmove || kbrmove || rotated) {
 				lastfalltouched = false;
-				for (auto elem : tetrominoInfo[fallingmino].shape[fmRotState]) {
-					if (fmCenterY - 1 + elem[Y_POS] < 0 || tetrominofield[fmCenterX + elem[X_POS]][fmCenterY - 1 + elem[Y_POS]] < 0) {
-						lastfalltouched = true;
-					}
-				}
 			};
 
 			// 缓冲时间距离上次操作 500 ms
