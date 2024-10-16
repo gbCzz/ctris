@@ -205,6 +205,28 @@ int main() {
 				drawMino(i, j, tetrominoInfo[drawingmino].bcolor, tetrominoInfo[drawingmino].dcolor);
 			}
 		}
+
+		// ªÊ÷∆“ı”∞
+		int nextY = fmCenterY;
+		bool bottomed = false;
+		for (auto elem : tetrominoInfo[fallingmino].shape[fmRotState]) {
+			if (nextY - 1 + elem[Y_POS] < 0 || tetrominofield[fmCenterX + elem[X_POS]][nextY - 1 + elem[Y_POS]] < 0) {
+				bottomed = true;
+			}
+		}
+
+		while (!bottomed) {
+			nextY -= 1;
+			for (auto elem : tetrominoInfo[fallingmino].shape[fmRotState]) {
+				if (nextY - 1 + elem[Y_POS] < 0 || tetrominofield[fmCenterX + elem[X_POS]][nextY - 1 + elem[Y_POS]] < 0) {
+					bottomed = true;
+				}
+			}
+		}
+
+		for (auto elem : tetrominoInfo[fallingmino].shape[fmRotState]) {
+			drawMino(fmCenterX + elem[X_POS], nextY + elem[Y_POS], tetrominoInfo[fallingmino].dcolor, 0);
+		}
 		// À¢–¬∆¡ƒª
 		FlushBatchDraw();
 	}
