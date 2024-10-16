@@ -35,6 +35,7 @@ int main() {
 	bool lastfalltouched = false;
 	clock_t lastlmove = 0;
 	clock_t lastrmove = 0;
+	clock_t lastrot = 0;
 
 	TETROMINO_t tetrominofield[10][22] = {};
 
@@ -59,18 +60,21 @@ int main() {
 						if (!rotated) {
 							rotated = true;
 							rotate(fallingmino, fmRotState, (fmRotState + 1) % 4, fmCenterX, fmCenterY, tetrominofield);
+							lastrot = clock();
 						}
 						break;
 					case 'Z':
 						if (!rotated) {
 							rotated = true;
 							rotate(fallingmino, fmRotState, (fmRotState + 3) % 4, fmCenterX, fmCenterY, tetrominofield);
+							lastrot = clock();
 						}
 						break;
 					case 'A':
 						if (!rotated) {
 							rotated = true;
 							rotate(fallingmino, fmRotState, (fmRotState + 2) % 4, fmCenterX, fmCenterY, tetrominofield);
+							lastrot = clock();
 						}
 						break;
 					case 'C':
@@ -92,8 +96,12 @@ int main() {
 					case 'X':
 						rotated = false;
 						break;
-					case 'Z': break;
-					case 'A': break;
+					case 'Z':
+						rotated = false;
+						break;
+					case 'A':
+						rotated = false;
+						break;
 					case 'C':
 					case VK_SHIFT: break;
 					case VK_SPACE: break;
@@ -157,10 +165,17 @@ int main() {
 				lastrmove = clock();
 			}
 			// 移动后不锁块，在下一次循环重新判断是否还能下落，防止软降后平移却提前锁块
-			if (kblmove || kbrmove || rotated) lastfalltouched = false;
+			if (kblmove || kbrmove || rotated) {
+				lastfalltouched = false;
+				for (auto elem : tetrominoInfo[fallingmino].shape[fmRotState]) {
+					if (fmCenterY - 1 + elem[Y_POS] < 0 || tetrominofield[fmCenterX + elem[X_POS]][fmCenterY - 1 + elem[Y_POS]] < 0) {
+						lastfalltouched = true;
+					}
+				}
+			};
 
 			// 缓冲时间距离上次操作 500 ms
-			if (clock() - max(lastfall, max(lastrmove, lastlmove)) >= 500 && lastfalltouched) {
+			if (clock() - max(lastfall, max(lastrot, max(lastrmove, lastlmove))) >= 500 && lastfalltouched) {
 				lockmino(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 				fallingmino = 0;
 				lastfalltouched = false;
