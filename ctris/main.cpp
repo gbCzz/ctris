@@ -198,13 +198,6 @@ int main() {
 
 		// 绘制地图
 		drawPlayingField();
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 22; j++) {
-				if (tetrominofield[i][j] == 0) continue;
-				TETROMINO_t drawingmino = tetrominofield[i][j] > 0 ? tetrominofield[i][j] : -tetrominofield[i][j];
-				drawMino(i, j, tetrominoInfo[drawingmino].bcolor, tetrominoInfo[drawingmino].dcolor);
-			}
-		}
 
 		// 绘制阴影
 		int nextY = fmCenterY;
@@ -226,6 +219,14 @@ int main() {
 
 		for (auto elem : tetrominoInfo[fallingmino].shape[fmRotState]) {
 			drawMino(fmCenterX + elem[X_POS], nextY + elem[Y_POS], tetrominoInfo[fallingmino].dcolor, 0);
+		}
+
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 22; j++) {
+				if (tetrominofield[i][j] == 0) continue;
+				TETROMINO_t drawingmino = tetrominofield[i][j] > 0 ? tetrominofield[i][j] : -tetrominofield[i][j];
+				drawMino(i, j, tetrominoInfo[drawingmino].bcolor, tetrominoInfo[drawingmino].dcolor);
+			}
 		}
 
 		// 绘制 hold 方块
