@@ -244,6 +244,22 @@ int main() {
 				drawMino(-4 + elem[X_POS], 16 + elem[Y_POS], tetrominoInfo[holdingmino].dcolor, 0);
 		}
 
+		// »æÖÆ next ·½¿é
+		RECT tNEXTarea = {
+			MAX_WIDTH / 2 - 5 * CELL_LENGTH + (11) * CELL_LENGTH + 1,
+			MAX_HEIGHT / 2 + 11 * CELL_LENGTH - (20) * CELL_LENGTH,
+			MAX_WIDTH / 2 - 5 * CELL_LENGTH + (15) * CELL_LENGTH + 1,
+			MAX_HEIGHT / 2 + 11 * CELL_LENGTH - (18) * CELL_LENGTH,
+		};
+		settextstyle(CELL_LENGTH * 3 / 2, 0, _T("Arial"));
+		drawtext(_T("NEXT"), &tNEXTarea, DT_RIGHT | DT_VCENTER | DT_SINGLELINE);
+		for (int i = 0; i < 5; i++) {
+			auto nextmino = spawnQueue[i];
+			for (auto elem : tetrominoInfo[nextmino].shape[RST_0]) {
+				drawMino(12 + elem[X_POS], 16 - 3 * i + elem[Y_POS], tetrominoInfo[nextmino].bcolor, tetrominoInfo[nextmino].dcolor);
+			}
+		}
+
 		// Ë¢ÐÂÆÁÄ»
 		FlushBatchDraw();
 	}
