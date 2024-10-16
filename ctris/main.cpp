@@ -24,11 +24,13 @@ int main() {
 	bool softdropping = false;
 	bool hdropped = false;
 	bool rotated = false;
+	bool holded = false;
 
 	ExMessage m;
 
 	bool gaming = true;
 	TETROMINO_t fallingmino = 0;
+	TETROMINO_t holdingmino = 0;
 	ROTSTATE_t fmRotState = 0;
 	int fmCenterX = -1, fmCenterY = -1;
 	clock_t lastfall = 0;
@@ -78,12 +80,18 @@ int main() {
 						}
 						break;
 					case 'C':
-					case VK_SHIFT: break;
+					case VK_SHIFT:
+						if (!holded) {
+							holded = true;
+							holdexchange(fallingmino, holdingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
+						}
+						break;
 					case VK_SPACE:
 						hdropped = true;
+						holded = false;
 						hardDrop(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 						lockmino(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
-						flushfullline(tetrominofield); 
+						flushfullline(tetrominofield);
 						break;
 					case VK_DOWN: softdropping = true; break;
 				}
@@ -174,6 +182,7 @@ int main() {
 			if (clock() - max(lastfall, max(lastrot, max(lastrmove, lastlmove))) >= 500 && lastfalltouched) {
 				lockmino(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 				flushfullline(tetrominofield);
+				holded = false;
 				fallingmino = 0;
 				lastfalltouched = false;
 			}

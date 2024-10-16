@@ -172,6 +172,29 @@ void rotate(TETROMINO_t fallingmino,
 	}	
 }
 
+void holdexchange(
+	TETROMINO_t& fallingmino,
+	TETROMINO_t& holdingmino,
+	ROTSTATE_t& rotstate,
+	int& fmCenterX,
+	int& fmCenterY,
+	int field[10][22]
+) {
+	for (auto elem : tetrominoInfo[fallingmino].shape[rotstate]) {
+		field[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = 0;
+	}
+	auto tmp = fallingmino;
+	fallingmino = holdingmino;
+	holdingmino = tmp;
+	if (!fallingmino) return;
+	rotstate = 0;
+	fmCenterX = 4;
+	fmCenterY = 20;
+	for (auto elem : tetrominoInfo[fallingmino].shape[rotstate]) {
+		field[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = fallingmino;
+	}
+}
+
 int flushfullline(int field[10][22]) {
 	int cntline = 0;
 	for (int j = 0; j < 22; j++) {
