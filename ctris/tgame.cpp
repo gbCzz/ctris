@@ -2,12 +2,12 @@
 #include "tdefine.h"
 
 bool singleDrop(
-	TETROMINO_t fallingmino, 
-	ROTSTATE_t rotstate, 
-	int& fmCenterX, 
-	int& fmCenterY, 
+	TETROMINO_t fallingmino,
+	ROTSTATE_t rotstate,
+	int& fmCenterX,
+	int& fmCenterY,
 	int field[10][22]
-){
+) {
 	int nextY = fmCenterY;
 	bool touched = false;
 
@@ -132,4 +132,42 @@ void rightmove(
 		field[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = fallingmino;
 	}
 	return;
+}
+
+void rotate(TETROMINO_t fallingmino,
+	ROTSTATE_t& rotstate,
+	ROTSTATE_t targetstate,
+	int& fmCenterX,
+	int& fmCenterY,
+	int field[10][22]
+) {
+	for (int i = 0; i < 5; i++) {
+		bool rotable = true;
+		int wkX = tetrominoInfo[fallingmino].wall_kick[rotstate][i][X_POS] - tetrominoInfo[fallingmino].wall_kick[targetstate][i][X_POS];
+		int wkY = tetrominoInfo[fallingmino].wall_kick[rotstate][i][Y_POS] - tetrominoInfo[fallingmino].wall_kick[targetstate][i][Y_POS];
+
+		for (auto elem : tetrominoInfo[fallingmino].shape[targetstate]) {
+			if (
+				fmCenterX + wkX + elem[X_POS] < 0 ||
+				fmCenterX + wkX + elem[X_POS] > 9 ||
+				fmCenterY + wkY + elem[Y_POS] < 0 ||
+				field[fmCenterX + wkX + elem[X_POS]][fmCenterY + wkY + elem[Y_POS]] < 0
+				) {
+				rotable = false;
+			}
+		}
+
+		if (rotable) {
+			for (auto elem : tetrominoInfo[fallingmino].shape[rotstate]) {
+				field[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = 0;
+			}
+			fmCenterX += wkX;
+			fmCenterY += wkY;
+			rotstate = targetstate;
+			for (auto elem : tetrominoInfo[fallingmino].shape[rotstate]) {
+				field[fmCenterX + elem[X_POS]][fmCenterY + elem[Y_POS]] = fallingmino;
+			}
+			break;
+		}
+	}	
 }

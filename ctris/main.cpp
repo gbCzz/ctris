@@ -23,6 +23,7 @@ int main() {
 
 	bool softdropping = false;
 	bool hdropped = false;
+	bool rotated = false;
 
 	ExMessage m;
 
@@ -43,20 +44,35 @@ int main() {
 			if (m.message == WM_KEYDOWN) {
 				switch (m.vkcode) {
 					case VK_ESCAPE:	kbexit = true; break;
-					case VK_LEFT: 
-						if(!kblmove) kblmove = clock();
+					case VK_LEFT:
+						if (!kblmove) kblmove = clock();
 						leftmove(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 						lastlmove = clock();
 						break;
-					case VK_RIGHT: 
-						if(!kbrmove) kbrmove = clock();
+					case VK_RIGHT:
+						if (!kbrmove) kbrmove = clock();
 						rightmove(fallingmino, fmRotState, fmCenterX, fmCenterY, tetrominofield);
 						lastrmove = clock();
 						break;
 					case VK_UP:
-					case 'X': break;
-					case 'Z': break;
-					case 'A': break;
+					case 'X':
+						if (!rotated) {
+							rotated = true;
+							rotate(fallingmino, fmRotState, (fmRotState + 1) % 4, fmCenterX, fmCenterY, tetrominofield);
+						}
+						break;
+					case 'Z':
+						if (!rotated) {
+							rotated = true;
+							rotate(fallingmino, fmRotState, (fmRotState + 3) % 4, fmCenterX, fmCenterY, tetrominofield);
+						}
+						break;
+					case 'A':
+						if (!rotated) {
+							rotated = true;
+							rotate(fallingmino, fmRotState, (fmRotState + 2) % 4, fmCenterX, fmCenterY, tetrominofield);
+						}
+						break;
 					case 'C':
 					case VK_SHIFT: break;
 					case VK_SPACE:
@@ -73,7 +89,9 @@ int main() {
 					case VK_LEFT: kblmove = 0; break;
 					case VK_RIGHT: kbrmove = 0; break;
 					case VK_UP:
-					case 'X': break;
+					case 'X':
+						rotated = false;
+						break;
 					case 'Z': break;
 					case 'A': break;
 					case 'C':
@@ -102,6 +120,7 @@ int main() {
 		// 检查是否有正在掉落的方块，如没有，则生成一个
 		if (gaming && !fallingmino) {
 			fallingmino = spawnQueue.front();
+			fmRotState = 0;
 			fmCenterX = 4;
 			fmCenterY = 20;
 			for (auto elem : tetrominoInfo[fallingmino].shape[RST_0]) {
@@ -138,7 +157,7 @@ int main() {
 				lastrmove = clock();
 			}
 			// 移动后不锁块，在下一次循环重新判断是否还能下落，防止软降后平移却提前锁块
-			if (kblmove || kbrmove) lastfalltouched = false;
+			if (kblmove || kbrmove || rotated) lastfalltouched = false;
 
 			// 缓冲时间距离上次操作 500 ms
 			if (clock() - max(lastfall, max(lastrmove, lastlmove)) >= 500 && lastfalltouched) {
